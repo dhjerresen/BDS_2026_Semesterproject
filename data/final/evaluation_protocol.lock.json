@@ -1,0 +1,48 @@
+{
+  "protocol_version": "1.0.0",
+  "status": "analysis_rules_preregistered_dataset_identity_locked_expert_review_pending",
+  "model_and_inference_configuration": "pending_before_first_main_test_run",
+  "source_dataset": "danish-foundation-models/dala",
+  "source_revision": "0cc96091dc265d14fb5d507114690fd85857b6da",
+  "manifest_sha256": "2cfd0b542bcabfb7d9d75c5dcfefe0ea50bebf2b3b7e1595dcfdb2bc54ad18d1",
+  "evaluation_protocol_sha256": "c4d47c7e706464bf523d672f5b8a530f78e375f77ded9f9cdb58d8fae328c339",
+  "dataset_output_sha256": {
+    "train.csv": "dee9aa5e3edab1118ca1fbe37e82bff63dfd225bd8fc96b29d2e4e60aa49baaf",
+    "validation.csv": "9ca699247b5b47c85a6e025e51cd7a3d53566d2a0ec8d2ab1765f98f2cbba73b",
+    "test_errors.csv": "2a8657dd5e0e4644bbbade0b6cc9e982aa7c597353696219be40a2311ff4a9d6",
+    "test_controls.csv": "34c51e600a1fe48dac202e931ce138da8806c93b61c837d8a0651d3cab62b55e",
+    "test_audit_sample.csv": "0ac53793a3b0525fc0e609549879c1b84e14af8988493c3717c55fd6575041a4",
+    "test_audit_annotated.csv": "c3e0b87549f9af1dce457cf4aed21492fbbe89e0791f48dbec5642ebe81fbc4a"
+  },
+  "audit_screening": {
+    "independently_adjudicated": false,
+    "flagged_train_val": 17,
+    "flagged_test": 11,
+    "flagged_test_ids": [
+      "test-00093",
+      "test-00171",
+      "test-00195",
+      "test-00233",
+      "test-00256",
+      "test-00551",
+      "test-00552",
+      "test-00683",
+      "test-00739",
+      "test-00758",
+      "test-00873"
+    ]
+  },
+  "analysis_sets": {
+    "primary_error_test_n": 1024,
+    "control_test_n": 1024,
+    "sensitivity_excluding_all_11_audit_flags_n": 1013,
+    "sensitivity_exclusion_reason": "pre-identified audit flags, not confirmed invalid data",
+    "manual_error_pairs_per_model": 80,
+    "manual_control_pairs_per_model": 32,
+    "manual_pair_seed": 20261105
+  },
+  "analysis_files_sha256": {
+    "manual_review_pair_ids.csv": "8658fbb47e6641594d545c60bb4e0484cd55ac03defa87bab315e182fb067a86",
+    "sensitivity_unflagged_test_ids.csv": "f043a91208ba03be79861176685262086ccb72fabea55a87f28ecf086abbe83e"
+  }
+}

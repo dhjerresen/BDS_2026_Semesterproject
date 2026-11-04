@@ -1,10 +1,10 @@
 {
   "source_dataset": "danish-foundation-models/dala",
   "source_mode": "hugging_face",
-  "source_revision": "not pinned; pin a revision for final reproducibility",
+  "source_revision": "0cc96091dc265d14fb5d507114690fd85857b6da",
   "reconstruction_method": "undo pandas.DataFrame.sample(frac=1.0, random_state=4242); pair first and second halves",
   "shuffle_seed": 4242,
-  "created_utc": "2026-11-04T16:33:52.767123+00:00",
+  "created_utc": "2026-11-04T17:25:29.952339+00:00",
   "python_version": "3.13.5",
   "pandas_version": "3.0.5",
   "number_of_pairs": 1664,
