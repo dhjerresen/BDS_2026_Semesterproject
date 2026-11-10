@@ -1,0 +1,50 @@
+{
+  "protocol_version": "pooled-simple-v3",
+  "source_dataset": "danish-foundation-models/dala",
+  "source_revision": "0cc96091dc265d14fb5d507114690fd85857b6da",
+  "reconstruction_shuffle_seed": 4242,
+  "design": "pooled zero-shot model comparison; no fine-tuning or prompt development",
+  "source_splits": "Original train/val/test retained as metadata only, not experimental partitions",
+  "counts": {
+    "error_inputs": 1664,
+    "control_inputs": 1664,
+    "total_inputs": 3328,
+    "error_categories": 16
+  },
+  "error_category_counts": {
+    "corrupt_adjective_r": 83,
+    "corrupt_ende_ene": 147,
+    "corrupt_genitive": 25,
+    "corrupt_noun_r": 191,
+    "corrupt_spelling": 65,
+    "corrupt_verb_r": 150,
+    "delete": 70,
+    "flip_en_et_suffix": 171,
+    "flip_far_for": 166,
+    "flip_han_hun_to_det": 49,
+    "flip_indefinite_article": 218,
+    "flip_ligge_laegge": 31,
+    "flip_neighbours": 81,
+    "flip_nogle_nogen": 28,
+    "flip_pronouns": 163,
+    "flip_som_der": 26
+  },
+  "source_split_counts": {
+    "test": 1024,
+    "train": 512,
+    "val": 128
+  },
+  "quality_caveat": "References are not fully linguistically validated; Exact Match is reference agreement, not necessarily grammatical correctness.",
+  "review_policy": "Manual reference review files not required or generated; optional later qualitative analysis.",
+  "prompt_policy": "Select and document one identical zero-shot prompt before running any models.",
+  "input_sha256": {
+    "dala_gec_pairs.csv": "51ac0593694306475f8b7996152b3e96a970eda709167239d80792be8eeac616",
+    "dala_controls.csv": "58a174bd9dc68aee3a76d62b6a8bd081364843e94e50e0da2ac8a01953e3a2c4",
+    "dataset_report.json": "b7ab0cdbbb989ce0b1c2f2dc0d5622027c554c18ac1782f7be45fc57b4582e3b"
+  },
+  "output_sha256": {
+    "all_errors.csv": "56187b632f44934ae8d0c835c1aecd2fe89cb9c4c30e269312acb9093e20046b",
+    "all_controls.csv": "b1dc864fb4be3082e95723967081a3d82d57c2df7e034160b81d26e301b44076",
+    "evaluation_inputs.csv": "0e8de0b7a1dcd159e525ca0605970407223d15312d5b6f177803f7a36208fad0"
+  }
+}

@@ -1,51 +1,35 @@
-# Dataset preparation for Danish GEC evaluation
+# DaLA pooled zero-shot evaluation – simplified
 
-A local Python implementation of minimal-pair reconstruction from the **published DaLA standard** acceptability dataset. It does NOT generate new errors; it reverses the fixed shuffle in the original code and validates the alignment before exporting pairs.
+Denne version har kun to aktive scripts:
 
-## Setup
+1. `prepare_dataset.py` rekonstruerer original og fejlbehæftet tekst fra DaLA.
+2. `prepare_pooled_evaluation.py` samler alle observationer og validerer metadata.
 
-Requires Python >= 3.10 (3.12 recommended).
+## Kør i projektets rodmappe
 
 ```bash
-python -m venv .venv
-# Windows: .venv\Scripts\activate
-# macOS/Linux: source .venv/bin/activate
 python -m pip install -r requirements.txt
-python prepare_dataset.py
+python prepare_dataset.py --revision 0cc96091dc265d14fb5d507114690fd85857b6da
+python prepare_pooled_evaluation.py
 ```
 
-The default source is `danish-foundation-models/dala` from Hugging Face, downloaded once into the normal Hugging Face cache. The dataset itself is not included in this download.
+`prepare_pooled_evaluation.py` læser kun:
 
-Alternatively, use CSVs saved by the DaLA creators (`dala_da_train.csv`, `dala_da_val.csv`, `dala_da_test.csv`, or `train.csv`, `val.csv`, `test.csv`):
+- `data/processed/dala_gec_pairs.csv`
+- `data/processed/dala_controls.csv`
+- `data/processed/dataset_report.json`
 
-```bash
-python prepare_dataset.py --input-dir data/raw --output-dir data/processed
-```
+Og skriver:
 
-To pin the Hugging Face dataset revision for a finalized experiment:
+- `data/pooled/all_errors.csv` (1.664)
+- `data/pooled/all_controls.csv` (1.664)
+- `data/pooled/evaluation_inputs.csv` (3.328)
+- `data/pooled/pooled_manifest.json` (kilde, antal og hashes)
 
-```bash
-python prepare_dataset.py --revision YOUR_HUGGING_FACE_COMMIT_SHA
-```
+Ingen review-filer, tidligere test-splits eller `data/final` er nødvendige. `source_split` bevares kun som kilde-metadata. Ingen observationer ekskluderes eller omskrives.
 
-## Output
+Hvis gamle pooled-filer allerede findes og afviger, stopper scriptet for at undgå utilsigtet overskrivning. Gennemgå dem og kør kun `python prepare_pooled_evaluation.py --force`, hvis du vil erstatte dem.
 
-- `data/processed/dala_gec_pairs.csv`: `pair_id`, `split`, `error_type`, `incorrect_text`, `reference_text`.
-- `data/processed/dala_controls.csv`: matching originally correct controls (`input_text == reference_text`).
-- `data/processed/dala_evaluation_inputs.csv`: one row per model request, including `is_control`.
-- `data/processed/dala_manual_review.csv`: stratified quality review from train and val, five examples per error category by default.
-- `data/processed/dataset_report.json`: categories, counts, duplicates, overlap and source metadata.
+## Metodeforbehold
 
-## Integrity and caveats
-
-The original `dala/create_dala.py` concatenates correct/incorrect rows and shuffles with `pandas.DataFrame.sample(frac=1.0, random_state=4242)`. The script reverses this operation and verifies that both halves have expected labels, corruption types, nonempty texts, and different strings. If alignment fails, the script exits with an error and does not export potentially incorrect pairs.
-
-A successful programmatic reconstruction **does not demonstrate linguistic validity**: original sentences may have issues unrelated to the injected corruption, and more than one correction might be acceptable. Audit the stratified manual sample before using the data for the final evaluation, and do not use the reserved test split to tune prompts. Controls and corrupted sentences with the same `pair_id` must always be grouped when making new data splits.
-
-The `full_train` split (if present) is intentionally **excluded**, because it overlaps the other original splits in the authors' creation logic.
-
-## Sources
-
-- [Official DaLA code](https://github.com/N-essuno/DaLA/blob/main/dala/create_dala.py)
-- [Published DaLA dataset](https://huggingface.co/datasets/danish-foundation-models/dala)
-- [DaLA paper (LREC 2026)](https://aclanthology.org/2026.lrec-1.338/)
+Exact Match måler overensstemmelse med den eksisterende DaLA-reference. Nogle referencekorrektioner kan være tvetydige eller indeholde øvrige sproglige fejl. Gem gerne de tidligere AI-assisterede screeninger som arkivmateriale, men de indgår ikke længere i den aktive datagenerering. Dokumentér én fælles zero-shot-prompt før modelkørsel.
