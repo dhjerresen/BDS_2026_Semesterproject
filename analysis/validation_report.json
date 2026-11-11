@@ -1,0 +1,20 @@
+{
+  "models": 6,
+  "observations_per_model": 3328,
+  "total_observations": 19968,
+  "canonical_inputs_verified": false,
+  "canonical_file": null,
+  "dataset_sha256": "0e8de0b7a1dcd159e525ca0605970407223d15312d5b6f177803f7a36208fad0",
+  "prompt_sha256": "334ac0d2b5e9e21d4b04c22774ae0926c5eb67f8af5ef20f492149c9979d237a",
+  "warnings": [
+    "Modellerne bruger forskellige Transformers-versioner; dokumentér forskellen."
+  ],
+  "metric_definitions": {
+    "exact_match_errors_pct": "ok output identical to reference, /1664 erroneous inputs; non-ok counts as not exact",
+    "unchanged_controls_pct": "ok output identical to input, /1664 controls; non-ok does NOT count as unchanged",
+    "modified_controls_all_pct": "all controls minus successfully unchanged controls, /1664; includes non-ok. Not a pure overcorrection rate.",
+    "non_ok_rate_pct": "possibly_truncated + empty_output + error, /3328",
+    "latency_all": "per-item reported elapsed seconds including non-ok; does not include model load, warmup",
+    "latency_ok": "per-item reported elapsed seconds, status ok only"
+  }
+}
