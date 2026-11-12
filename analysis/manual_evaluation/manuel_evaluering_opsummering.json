@@ -1,0 +1,60 @@
+{
+  "Munin Apertus 8B": {
+    "overall": {
+      "n": 30,
+      "correct": 21,
+      "meaning_yes": 25,
+      "meaning_partial": 1,
+      "unnecessary": 11,
+      "format_ok": 30,
+      "em_on_error": 9
+    },
+    "errors": {
+      "n": 23,
+      "correct": 16,
+      "meaning_yes": 20,
+      "meaning_partial": 0,
+      "unnecessary": 7,
+      "format_ok": 23,
+      "em_on_error": 9
+    },
+    "controls": {
+      "n": 7,
+      "correct": 5,
+      "meaning_yes": 5,
+      "meaning_partial": 1,
+      "unnecessary": 4,
+      "format_ok": 7,
+      "em_on_error": 0
+    }
+  },
+  "SnakModel 7B": {
+    "overall": {
+      "n": 30,
+      "correct": 16,
+      "meaning_yes": 30,
+      "meaning_partial": 0,
+      "unnecessary": 3,
+      "format_ok": 29,
+      "em_on_error": 7
+    },
+    "errors": {
+      "n": 23,
+      "correct": 10,
+      "meaning_yes": 23,
+      "meaning_partial": 0,
+      "unnecessary": 2,
+      "format_ok": 23,
+      "em_on_error": 7
+    },
+    "controls": {
+      "n": 7,
+      "correct": 6,
+      "meaning_yes": 7,
+      "meaning_partial": 0,
+      "unnecessary": 1,
+      "format_ok": 6,
+      "em_on_error": 0
+    }
+  }
+}

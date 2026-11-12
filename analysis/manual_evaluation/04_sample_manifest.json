@@ -1,0 +1,31 @@
+{
+  "selection": "målrettet, eksplorativt; IKKE populationsrepræsentativt",
+  "seed": 4242,
+  "source": "all_predictions.csv",
+  "source_sha256": "eec1d3430fa8fc8e4b52ca4ccba8ca26a363e9be47abcfcbf68427f07b410cd1",
+  "model_A_B_randomized_per_item": true,
+  "phase1_reference_hidden": true,
+  "selection_groups": {
+    "munin_only_em": 6,
+    "snak_only_em": 6,
+    "neither_em": 6,
+    "modified_control": 6,
+    "random_remainder": 6
+  },
+  "pool_sizes_before_de_duplication": {
+    "munin_only_em": 300,
+    "snak_only_em": 192,
+    "neither_em": 737,
+    "modified_control": 774,
+    "random_remainder": 3328
+  },
+  "n_unique_items": 30,
+  "n_model_outputs": 60,
+  "scoring_guidance": {
+    "sproglig_korrekthed": "Ja / Delvist / Nej / Usikkert",
+    "betydning_bevaret": "Ja / Delvist / Nej / Usikkert",
+    "unoedvendige_aendringer": "Nej / Valgfrie / Skadelige / Usikkert",
+    "format_ok": "Ja / Nej",
+    "tilsigtet_fejl_rettet": "Ja / Nej / Usikkert / Ikke relevant"
+  }
+}
