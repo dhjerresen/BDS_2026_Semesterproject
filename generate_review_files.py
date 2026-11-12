@@ -8,6 +8,7 @@ must be reported. Does not use AI, APIs, random samples, or regenerate labels.
 """
 from __future__ import annotations
 
+# Standard-library tools for command-line arguments, CSV/JSON files, hashing, and file paths.
 import argparse
 import csv
 import hashlib
@@ -16,86 +17,110 @@ import json
 import sys
 from pathlib import Path
 
+# Define the original dataset fields, annotation fields, and their order in the final CSVs.
 SOURCE_COLUMNS = ('pair_id','split','error_type','incorrect_text','reference_text')
 ANNOTATION_COLUMNS = ('error_plausible','reference_appropriate','alternative_valid_correction',
                       'issue_type','needs_follow_up','notes')
 OUTPUT_COLUMNS = SOURCE_COLUMNS + ANNOTATION_COLUMNS
+# Pin the source dataset to a specific revision so the review is reproducible.
 SOURCE_REVISION = '0cc96091dc265d14fb5d507114690fd85857b6da'
 
 
+# Return a SHA-256 fingerprint of bytes; matching hashes indicate identical content.
 def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+# Produce a consistent fingerprint of the source fields for one sentence pair.
+# Sorting JSON keys and fixing separators prevents formatting differences from changing the hash.
 def source_signature(row: dict[str,str]) -> str:
     raw = json.dumps({k: row[k] for k in SOURCE_COLUMNS}, ensure_ascii=False,
                      sort_keys=True, separators=(',', ':')).encode('utf-8')
     return sha256(raw)
 
 
+# Rebuild the reviewed CSVs from the prepared DaLA dataset and saved annotation decisions.
 def run(root: Path, force: bool) -> None:
+    # Locate the dataset, its preparation report, and the versioned annotations.
     processed = root / 'data' / 'processed'
     report_file = processed / 'dataset_report.json'
     data_file = processed / 'dala_gec_pairs.csv'
     annotations_file = root / 'review_data' / 'annotations_v1.json'
+    # Stop if any required input is absent rather than producing incomplete files.
     for file in (report_file, data_file, annotations_file):
         if not file.is_file():
             raise ValueError(f'Mangler nødvendig kildefil: {file}')
     report = json.loads(report_file.read_text(encoding='utf-8-sig'))
+    # Confirm that the dataset name, exact revision, and shuffle seed match the review setup.
     if (report.get('source_dataset') != 'danish-foundation-models/dala'
             or report.get('source_revision') != SOURCE_REVISION
             or report.get('shuffle_seed') != 4242):
         raise ValueError('Forkert DaLA-version/seed. Kør prepare_dataset.py med den fastlåste --revision.')
+    # Read the original sentence pairs and verify the expected columns and dataset size.
     with data_file.open(encoding='utf-8-sig', newline='') as handle:
         reader = csv.DictReader(handle)
         if not set(SOURCE_COLUMNS).issubset(reader.fieldnames or []):
             raise ValueError('DaLA-par mangler forventede kolonner.')
         pairs = list(reader)
+    # Index rows by pair ID for reliable matching with the saved annotations.
     by_id = {row['pair_id']:row for row in pairs}
     if len(by_id) != len(pairs):
         raise ValueError('Duplikerede pair_id i DaLA-par.')
     if len(pairs) != 1664:
         raise ValueError(f'Forventede 1664 DaLA-par, fik {len(pairs)}.')
+    # Load the recorded human-review decisions; the script does not create new judgments.
     spec = json.loads(annotations_file.read_text(encoding='utf-8'))
     if spec.get('schema_version') != '1.0':
         raise ValueError('Ukendt annotationsskema.')
+    # Hold all generated files in memory until every group has passed validation.
     outputs: dict[Path,bytes] = {}
     used_ids: set[str] = set()
     for label, source in spec['sources'].items():
         entries = source['entries']
+        # Each review source must contain the documented number of annotated examples.
         if len(entries) != source['expected_count']:
             raise ValueError(f'{label}: forkert antal annotationer.')
         rows=[]
         for entry in entries:
             pid=entry['pair_id']
+            # Reject unknown pairs and ensure a pair is not reused across review groups.
             if pid not in by_id or pid in used_ids:
                 raise ValueError(f'{label}: ukendt eller gentaget par-ID {pid}')
             used_ids.add(pid)
             original=by_id[pid]
+            # Detect any change to the underlying source example since it was reviewed.
             if source_signature(original) != entry['source_fields_sha256']:
                 raise ValueError(f'{label}: datakilde er ændret for {pid}. Stopper for at beskytte reviewkvaliteten.')
             annotation=entry['annotations']
+            # Require the complete annotation schema before combining it with the source fields.
             if set(annotation) != set(ANNOTATION_COLUMNS):
                 raise ValueError(f'{label}: ufuldstændige annotationsfelter for {pid}')
             rows.append({**{col:original[col] for col in SOURCE_COLUMNS},**annotation})
+        # Build CSV bytes in memory, using fixed column order, line endings, and UTF-8 BOM.
+        # These formatting details matter because the expected hash covers the exact file bytes.
         dest=io.StringIO(newline='')
         writer=csv.DictWriter(dest,fieldnames=OUTPUT_COLUMNS,lineterminator='\r\n')
         writer.writeheader()
         writer.writerows(rows)
         output=dest.getvalue().encode('utf-8-sig')
+        # Compare with the pinned output hash to verify exact reconstruction.
         if sha256(output) != source['expected_sha256']:
             raise ValueError(f'{label}: produceret CSV matcher ikke dokumenteret original hash.')
         outputs[root / 'reviews' / source['filename']]=output
+    # Protect locally edited review files unless overwriting is explicitly allowed.
     for file, data in outputs.items():
         if file.is_file() and file.read_bytes()!=data and not force:
             raise ValueError(f'Afvigende fil findes allerede: {file}. Undersøg først; --force tillader overskrivning.')
+    # Save the fully validated results and print their hashes for documentation.
     for file,data in outputs.items():
         file.parent.mkdir(parents=True,exist_ok=True)
         file.write_bytes(data)
         print(f'OK {file.relative_to(root)} ({sha256(data)})')
+    # Explicitly state the limitation: historic AI-assisted labels are not independent validation.
     print('OBS: Vurderingerne er historiske AI-assisterede annotationer, ikke uafhængig faglig validering.')
 
 
+# Parse the command-line options and report failures with a non-zero exit status.
 def main() -> int:
     parser=argparse.ArgumentParser(description='Genskab versionerede DaLA-reviewfiler deterministisk')
     parser.add_argument('--root',type=Path,default=Path('.'))
@@ -109,5 +134,6 @@ def main() -> int:
         return 1
 
 
+# Only execute the pipeline when this file is run as a script, not when imported.
 if __name__=='__main__':
     raise SystemExit(main())
