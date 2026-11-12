@@ -1,0 +1,7 @@
+﻿model,error_n,em_error_pct,gleu_error_pct,gleu_source_baseline_pct,gleu_reference_oracle_pct,non_ok_errors_n,controls_n,unchanged_controls_pct
+NLPnorth/snakmodel-7b-instruct,1664,37.68,83.627,73.061,100.0,0,1664,76.502
+Qwen/Qwen2.5-3B-Instruct,1664,10.216,70.635,73.061,100.0,0,1664,12.26
+Qwen/Qwen2.5-7B-Instruct,1664,7.332,63.764,73.061,100.0,0,1664,11.719
+danish-foundation-models/munin-apertus-8b,1664,44.171,86.372,73.061,100.0,0,1664,60.697
+microsoft/Phi-4-mini-instruct,1664,12.74,43.643,73.061,100.0,381,1664,58.474
+mistralai/Mistral-7B-Instruct-v0.3,1664,15.625,73.198,73.061,100.0,0,1664,15.805

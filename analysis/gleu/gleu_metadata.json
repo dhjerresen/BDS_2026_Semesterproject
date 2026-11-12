@@ -1,0 +1,21 @@
+{
+  "method": "standalone revised GEC-GLEU-style corpus metric (not official scorer)",
+  "implementation": "calculate_gleu.py",
+  "ngram": "1-4",
+  "tokenization": "Python str.split() whitespace",
+  "single_reference": true,
+  "controls_scored": false,
+  "failed_or_truncated_outputs": "included as empty hypotheses, no dropped observations",
+  "corpus_score": "geometric mean ngram precisions with brevity penalty",
+  "input_file": "all_predictions.csv",
+  "input_sha256": "eec1d3430fa8fc8e4b52ca4ccba8ca26a363e9be47abcfcbf68427f07b410cd1",
+  "models": 6,
+  "rows_per_model": {
+    "NLPnorth/snakmodel-7b-instruct": 3328,
+    "Qwen/Qwen2.5-3B-Instruct": 3328,
+    "Qwen/Qwen2.5-7B-Instruct": 3328,
+    "danish-foundation-models/munin-apertus-8b": 3328,
+    "microsoft/Phi-4-mini-instruct": 3328,
+    "mistralai/Mistral-7B-Instruct-v0.3": 3328
+  }
+}
